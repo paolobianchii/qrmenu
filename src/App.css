@@ -4,13 +4,18 @@ body {
   margin: 0;
 }
 
-.app-container {
-  padding-bottom: 60px; /* Altezza della TabBar */
-}
+
 
 .content {
   text-align: left;
-  margin-bottom: 60px !important;
+  min-height: 100vh; /* Copre almeno l'altezza della viewport */
+  background-image: url('../src//assets/img/background.jpg'); /* Inserisci qui il percorso della tua immagine di sfondo */
+  background-size: cover; /* Contiene l'immagine nella pagina */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed; /* Blocca l'immagine durante lo scroll */
+  background-color: rgba(255, 255, 255, 0.2); /* Colore bianco con 50% di trasparenza */
+
 }
 
 /* src/components/Menu.css */
@@ -25,4 +30,13 @@ body {
 
 .filter-container {
   margin-bottom: 20px;
+}
+
+/* src/components/Carrello.css */
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px; /* Aggiusta come necessario */
 }

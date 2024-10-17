@@ -8,12 +8,16 @@ const Carrello = () => {
   const { cartItems, totalQuantity, totalPrice, removeFromCart } = useCart();
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div>
+      <div
+        className="sticky-header"
+      >
       <Title level={2}>Carrello</Title>
+      </div>
       {totalQuantity === 0 ? (
         <p>Il carrello è vuoto.</p>
       ) : (
-        <div>
+        <div style={{padding:10}}>
           <List
             itemLayout="horizontal"
             dataSource={cartItems}

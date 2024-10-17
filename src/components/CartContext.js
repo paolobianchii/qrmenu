@@ -19,7 +19,9 @@ export const CartProvider = ({ children }) => {
       setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
     }
   };
-
+  const getTotalProducts = () => {
+    return cartItems.length; // Conta il numero di prodotti unici nel carrello
+  };
   const removeFromCart = (id) => {
     setCartItems(cartItems.filter((item) => item.id !== id));
   };
@@ -31,7 +33,7 @@ export const CartProvider = ({ children }) => {
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2); // Calcola il totale e formatta a 2 decimali
 
   return (
-    <CartContext.Provider value={{ cartItems, totalQuantity, getTotalQuantity, totalPrice, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, totalQuantity, getTotalProducts, getTotalQuantity, totalPrice, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

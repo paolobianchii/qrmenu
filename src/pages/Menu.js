@@ -31,16 +31,37 @@ const QuantitySelector = ({ mealId, onChange }) => {
 
   return (
     <div
-      style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        marginBottom: "10px",
+        justifyContent: "flex-end",
+      }}
     >
-      <Button onClick={handleDecrement} style={{ flex: "1" }}>
-        {" "}
-        -{" "}
+      <Button
+        onClick={handleDecrement}
+        style={{
+          fontSize: 25,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        -
       </Button>
-      <span style={{ margin: "0 10px" }}>{quantity}</span>
-      <Button onClick={handleIncrement} style={{ flex: "1" }}>
-        {" "}
-        +{" "}
+      <span style={{ margin: "0 10px", fontSize: 20, fontWeight: "600" }}>
+        {quantity}
+      </span>
+      <Button
+        onClick={handleIncrement}
+        style={{
+          fontSize: 25,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        +
       </Button>
     </div>
   );
@@ -129,57 +150,32 @@ const Menu = () => {
     localStorage.setItem("language", value);
   };
 
-  const spicinessMapping = {
-    Mexican: "high",
-    Indian: "high",
-    Thai: "medium",
-    Italian: "low",
-    // Aggiungi altre categorie secondo necessità
-  };
-
-  const getSpiciness = (meal) => {
-    const category = meal.strCategory; // Usa la categoria del pasto per determinare la piccantezza
-    return spicinessMapping[category] || "low"; // Ritorna 'low' se la categoria non è mappata
-  };
-
-  // Funzione per determinare l'icona di piccantezza
-  const getSpicinessIcon = (spiciness) => {
-    switch (spiciness) {
-      case "low":
-        return <FaAdjust style={{ color: "green", marginLeft: "10px" }} />;
-      case "medium":
-        return <FaPepperHot style={{ color: "orange", marginLeft: "10px" }} />;
-      case "high":
-        return <FaFire style={{ color: "red", marginLeft: "10px" }} />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div style={{ padding: "10px" }}>
+    <div>
       <div
         className="sticky-header"
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexDirection:"row"
         }}
       >
         <Title level={2}>{translate("menu")}</Title>
         <Select
           value={language}
           onChange={handleLanguageChange}
-          style={{ width: 120, marginLeft: "auto" }}
+          style={{ width: 120, marginLeft: "auto", marginTop:12 }}
         >
-          <Option value="it"><FlagFilled/> Italiano</Option>
-          <Option value="en"><FlagFilled/> English</Option>
+          <Option value="it">
+            <FlagFilled /> Italiano
+          </Option>
+          <Option value="en">
+            <FlagFilled /> English
+          </Option>
         </Select>
       </div>
 
-      <p style={{ marginLeft: 20 }}>
-        {translate("filter")} : <strong>{selectedCategory}</strong>
-      </p>
       <div
         className="filter-container"
         style={{
@@ -188,6 +184,7 @@ const Menu = () => {
           padding: "5px",
           backgroundColor: "transparent",
           borderRadius: "8px",
+          marginTop: 15,
         }}
       >
         <Radio.Group
@@ -201,12 +198,14 @@ const Menu = () => {
               margin: "0 10px",
               padding: 18,
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
-              borderRadius: "21px",
+              flexDirection:"row",
+              backgroundColor:"#053EEF",
+              color:"#fff"
             }}
           >
-            <FaCoffee /> {translate("all")}
+            <FaCoffee/> {translate("all")}
           </Radio.Button>
           <Radio.Button
             value="Vegetarian"
@@ -216,7 +215,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: "21px",
+              flexDirection:"row",
+              backgroundColor:"#5BA525",
+              color:"#fff"
             }}
           >
             <FaLeaf /> {translate("vegetarian")}
@@ -229,7 +230,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: "21px",
+              flexDirection:"row",
+              backgroundColor:"#AA3C3B",
+              color:"#fff"
             }}
           >
             <FaFire /> {translate("beef")}
@@ -242,7 +245,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: "21px",
+              flexDirection:"row",
+              backgroundColor:"#ECA237",
+              color:"#fff"
             }}
           >
             <FaDrumstickBite /> {translate("chicken")}
@@ -253,37 +258,42 @@ const Menu = () => {
       {loading ? (
         <Spin size="large" style={{ margin: "20px auto", display: "block" }} />
       ) : meals.length > 0 ? (
-        <Row gutter={[16, 16]}>
+        <Row gutter={[16, 16]} style={{marginLeft:0, marginRight:0}}>
           {filteredMeals.map((meal) => {
             const price = 10; // Sostituisci con il prezzo desiderato o un calcolo da un API
-            const spiciness = getSpiciness(meal);
             return (
               <Col xs={24} sm={24} md={12} key={meal.idMeal}>
                 <Card
                   title={
-                    <span>
+                    <span
+                      style={{
+                        fontSize: 20,
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        
+                      }}
+                    >
                       {meal.strMeal}
-                      {getSpicinessIcon(spiciness)}
                     </span>
                   }
                   bordered={true}
-                  style={{ marginBottom: "20px" }}
                 >
                   <img
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
                     style={{
                       width: "100%",
-                      height: "150px", // Riduci l'altezza dell'immagine
+                      height: "160px", // Riduci l'altezza dell'immagine
                       objectFit: "cover",
                       borderRadius: "8px",
-                      marginBottom: "10px",
+                      marginBottom: "5px",
                     }}
                   />
-                  <p>
-                    <strong>Ingredienti:</strong> {meal.strIngredient1},{" "}
+                  <p style={{ width: "100%", height: "100%" }}>
+                    <strong>Ingredienti:</strong> {meal.strIngredient1},
                     {meal.strIngredient2}, {meal.strIngredient3}, ...
-                  </p>{" "}
+                  </p>
                   {/* Mostra ingredienti qui */}
                   <QuantitySelector
                     mealId={meal.idMeal}
@@ -302,9 +312,9 @@ const Menu = () => {
                         quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
                       })
                     }
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", padding: 20, fontSize:16, fontWeight:"600", backgroundColor:"#053EEF" }}
                   >
-                    {translate("addToCart")}
+                    + {translate("addToCart")}
                   </Button>
                 </Card>
               </Col>

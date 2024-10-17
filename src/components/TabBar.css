@@ -1,25 +1,33 @@
 /* src/components/TabBar.css */
+
 .tab-bar {
   display: flex;
   justify-content: space-around;
-  background-color: #fff;
+  background-color: #053EEF;
   padding: 13px 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: fixed; /* Fissa la tab bar in basso */
   bottom: 0;
-  height: 55px;
+  height: 48px;
   width: 100%;
   z-index: 1000; /* Assicura che sia sopra altri elementi */
 }
 
+/* Aggiungi un margine inferiore alla pagina */
+body {
+  margin: 0; /* Rimuovi il margine predefinito */
+  padding-bottom: 48px; /* Spazio per la tab bar */
+}
+
 .tab-link {
   text-decoration: none;
-  color: #555; /* Colore di default */
+  color: #fff; /* Colore di default */
   padding: 10px 15px;
   border-radius: 5px;
   width: 100% !important;
   transition: color 0.3s, transform 0.3s; /* Transizioni per colore e trasformazione */
   display: flex;
+  font-size: 13px !important;
   align-items: center;
   flex-direction: column;
   justify-content: center; /* Allinea verticalmente il contenuto */
@@ -27,9 +35,6 @@
 }
 
 .tab-link.active {
-  color: #007bff; /* Colore del testo quando attivo */
+  color: #fff; /* Colore del testo quando attivo */
   transform: scale(1.1); /* Ingrandisce il tab attivo */
 }
-
-
-
