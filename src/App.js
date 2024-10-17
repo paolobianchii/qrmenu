@@ -14,7 +14,7 @@ function App() {
       <div className="app-container">
         <div className="content">
           <Routes>
-            <Route exact path="/" element={<Menu />} />
+            <Route exact path="/qrmenu" element={<Menu />} />
             <Route path="/carrello" element={<Carrello />} />
             <Route path="/pagamento" element={<Pagamento />} /> {/* Cambiato 'component' in 'element' */}
           </Routes>

@@ -12,7 +12,7 @@ const TabBar = () => {
 
   return (
     <nav className="tab-bar">
-      <NavLink exact to="/" activeClassName="active" className="tab-link">
+      <NavLink exact to="/qrmenu" activeClassName="active" className="tab-link">
         <MenuOutlined className="icon" /> {/* Icona del menu */}
         <span>Menu</span>
       </NavLink>
