@@ -1,0 +1,36 @@
+/* src/components/TabBar.css */
+.tab-bar {
+  display: flex;
+  justify-content: space-around;
+  background-color: #fff;
+  padding: 10px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Fissa la tab bar in basso */
+  bottom: 0;
+  width: 100%;
+  z-index: 1000; /* Assicura che sia sopra altri elementi */
+}
+
+.tab-link {
+  text-decoration: none;
+  color: #555; /* Colore di default */
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: color 0.3s, transform 0.3s; /* Transizioni per colore e trasformazione */
+  display: flex;
+  align-items: center;
+}
+
+.tab-link:hover {
+  color: #007bff; /* Colore al passaggio del mouse */
+  transform: scale(1.1); /* Leggero ingrandimento al passaggio del mouse */
+}
+
+.tab-link.active {
+  color: #007bff; /* Colore del testo quando attivo */
+}
+
+.tab-icon {
+  margin-right: 5px; /* Spazio tra icona e testo */
+  font-size: 20px; /* Dimensione dell'icona */
+}
