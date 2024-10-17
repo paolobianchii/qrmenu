@@ -6,17 +6,17 @@ import "./TabBar.css";
 import { Badge } from "antd";
 import { useCart } from "./CartContext";
 
-const TabBar = () => {
+const TabBar = ({activeTab}) => {
   const [showCartLink /*setShowCartLink*/] = useState(false); // Stato per controllare la visibilità
   const { getTotalQuantity } = useCart(); // Recupera la funzione per ottenere il totale
 
   return (
     <nav className="tab-bar">
-      <NavLink exact to="/qrmenu" activeClassName="active" className="tab-link">
+      <NavLink exact to="/qrmenu" activeClassName="active" className={`tab-link ${activeTab === 'about' ? 'active' : ''}`}>
         <MenuOutlined className="icon" /> {/* Icona del menu */}
         <span>Menu</span>
       </NavLink>
-      <NavLink to="/carrello" activeClassName="active" className="tab-link">
+      <NavLink to="/carrello" activeClassName="active" className={`tab-link ${activeTab === 'about' ? 'active' : ''}`}>
         <ShoppingCartOutlined className="icon" /> {/* Icona per Carrello */}
         <Badge count={getTotalQuantity()} offset={[10, 0]}>
           Carrello
