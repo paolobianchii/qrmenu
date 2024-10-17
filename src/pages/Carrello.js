@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCart } from '../components/CartContext';
+import { useCart } from '../components/CartContext'; // Assicurati che il percorso sia corretto
 import { List, Typography, Button } from 'antd';
 
 const { Title } = Typography;

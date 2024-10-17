@@ -1,13 +1,11 @@
-// src/components/TabBar.js
-import React, { useState } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import { MenuOutlined, ShoppingCartOutlined } from "@ant-design/icons"; // Importa le icone
 import "./TabBar.css";
 import { Badge } from "antd";
 import { useCart } from "./CartContext";
 
-const TabBar = ({activeTab}) => {
-  const [showCartLink /*setShowCartLink*/] = useState(false); // Stato per controllare la visibilità
+const TabBar = ({ activeTab }) => {
   const { getTotalQuantity } = useCart(); // Recupera la funzione per ottenere il totale
 
   return (
@@ -18,16 +16,10 @@ const TabBar = ({activeTab}) => {
       </NavLink>
       <NavLink to="/carrello" activeClassName="active" className={`tab-link ${activeTab === 'about' ? 'active' : ''}`}>
         <ShoppingCartOutlined className="icon" /> {/* Icona per Carrello */}
-        <Badge count={getTotalQuantity()} offset={[10, 0]}>
-          Carrello
+        <span>Carrello</span>
+        <Badge count={getTotalQuantity()} offset={[10, 0]} className="badgeCart">
         </Badge>
       </NavLink>
-      {showCartLink && ( // Condizione per mostrare il NavLink
-        <NavLink to="/pagamento" activeClassName="active" className="tab-link">
-          <ShoppingCartOutlined className="icon" />
-          <span>Pagamento</span>
-        </NavLink>
-      )}
     </nav>
   );
 };

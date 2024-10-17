@@ -11,11 +11,16 @@
   z-index: 1000; /* Assicura che sia sopra altri elementi */
 }
 
+.badgeCart{
+
+}
+
 .tab-link {
   text-decoration: none;
   color: #555; /* Colore di default */
   padding: 10px 15px;
   border-radius: 5px;
+  width: 100% !important;
   transition: color 0.3s, transform 0.3s; /* Transizioni per colore e trasformazione */
   display: flex;
   align-items: center;
@@ -29,19 +34,5 @@
   transform: scale(1.1); /* Ingrandisce il tab attivo */
 }
 
-.tab-link:hover {
-  color: #0056b3; /* Colore quando si passa con il mouse */
-}
 
-/* Opzionale: Aggiungi un effetto di sfondo per il tab attivo */
-.tab-link.active:after {
-  content: '';
-  position: absolute;
-  bottom: -5px; /* Sposta l'effetto sotto il tab */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 5px; /* Altezza della linea */
-  background-color: #007bff; /* Colore della linea attiva */
-  border-radius: 5px; /* Angoli arrotondati */
-}
+
