@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Button, Typography, Spin, Radio, Select } from "antd";
 import { useCart } from "../components/CartContext";
-import { FaCoffee, FaLeaf, FaFire, FaDrumstickBite } from "react-icons/fa";
+import {
+  FaCoffee,
+  FaLeaf,
+  FaFire,
+  FaDrumstickBite,
+  FaPepperHot,
+  FaAdjust,
+} from "react-icons/fa";
+import { FlagFilled } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -22,10 +30,18 @@ const QuantitySelector = ({ mealId, onChange }) => {
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
-      <Button onClick={handleDecrement} style={{ flex: "1" }}> - </Button>
+    <div
+      style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}
+    >
+      <Button onClick={handleDecrement} style={{ flex: "1" }}>
+        {" "}
+        -{" "}
+      </Button>
       <span style={{ margin: "0 10px" }}>{quantity}</span>
-      <Button onClick={handleIncrement} style={{ flex: "1" }}> + </Button>
+      <Button onClick={handleIncrement} style={{ flex: "1" }}>
+        {" "}
+        +{" "}
+      </Button>
     </div>
   );
 };
@@ -38,13 +54,18 @@ const Menu = () => {
   const [language, setLanguage] = useState("it");
   const { addToCart } = useCart();
 
+  // Stato per memorizzare la quantità selezionata per ogni pasto
+  const [quantities, setQuantities] = useState({});
+
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") || "it";
     setLanguage(storedLanguage);
     const fetchMeals = async () => {
       setLoading(true);
       try {
-        const response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=");
+        const response = await fetch(
+          "https://www.themealdb.com/api/json/v1/1/search.php?s="
+        );
         const data = await response.json();
         if (data.meals) {
           setMeals(data.meals);
@@ -68,6 +89,13 @@ const Menu = () => {
       const filtered = meals.filter((meal) => meal.strCategory === category);
       setFilteredMeals(filtered);
     }
+  };
+
+  const handleQuantityChange = (mealId, quantity) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [mealId]: quantity,
+    }));
   };
 
   const translate = (key) => {
@@ -101,6 +129,33 @@ const Menu = () => {
     localStorage.setItem("language", value);
   };
 
+  const spicinessMapping = {
+    Mexican: "high",
+    Indian: "high",
+    Thai: "medium",
+    Italian: "low",
+    // Aggiungi altre categorie secondo necessità
+  };
+
+  const getSpiciness = (meal) => {
+    const category = meal.strCategory; // Usa la categoria del pasto per determinare la piccantezza
+    return spicinessMapping[category] || "low"; // Ritorna 'low' se la categoria non è mappata
+  };
+
+  // Funzione per determinare l'icona di piccantezza
+  const getSpicinessIcon = (spiciness) => {
+    switch (spiciness) {
+      case "low":
+        return <FaAdjust style={{ color: "green", marginLeft: "10px" }} />;
+      case "medium":
+        return <FaPepperHot style={{ color: "orange", marginLeft: "10px" }} />;
+      case "high":
+        return <FaFire style={{ color: "red", marginLeft: "10px" }} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div style={{ padding: "10px" }}>
       <div
@@ -112,14 +167,13 @@ const Menu = () => {
         }}
       >
         <Title level={2}>{translate("menu")}</Title>
-
         <Select
           value={language}
           onChange={handleLanguageChange}
           style={{ width: 120, marginLeft: "auto" }}
         >
-          <Option value="it">Italiano</Option>
-          <Option value="en">English</Option>
+          <Option value="it"><FlagFilled/> Italiano</Option>
+          <Option value="en"><FlagFilled/> English</Option>
         </Select>
       </div>
 
@@ -131,7 +185,7 @@ const Menu = () => {
         style={{
           overflowX: "auto",
           whiteSpace: "nowrap",
-          padding: "10px",
+          padding: "5px",
           backgroundColor: "transparent",
           borderRadius: "8px",
         }}
@@ -141,16 +195,56 @@ const Menu = () => {
           onChange={(e) => filterMeals(e.target.value)}
           style={{ display: "flex", justifyContent: "flex-start" }}
         >
-          <Radio.Button value="All" style={{ margin: "0 10px" }}>
+          <Radio.Button
+            value="All"
+            style={{
+              margin: "0 10px",
+              padding: 18,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "21px",
+            }}
+          >
             <FaCoffee /> {translate("all")}
           </Radio.Button>
-          <Radio.Button value="Vegetarian" style={{ margin: "0 10px" }}>
+          <Radio.Button
+            value="Vegetarian"
+            style={{
+              margin: "0 10px",
+              padding: 18,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "21px",
+            }}
+          >
             <FaLeaf /> {translate("vegetarian")}
           </Radio.Button>
-          <Radio.Button value="Beef" style={{ margin: "0 10px" }}>
+          <Radio.Button
+            value="Beef"
+            style={{
+              margin: "0 10px",
+              padding: 18,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "21px",
+            }}
+          >
             <FaFire /> {translate("beef")}
           </Radio.Button>
-          <Radio.Button value="Chicken" style={{ margin: "0 10px" }}>
+          <Radio.Button
+            value="Chicken"
+            style={{
+              margin: "0 10px",
+              padding: 18,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "21px",
+            }}
+          >
             <FaDrumstickBite /> {translate("chicken")}
           </Radio.Button>
         </Radio.Group>
@@ -162,10 +256,16 @@ const Menu = () => {
         <Row gutter={[16, 16]}>
           {filteredMeals.map((meal) => {
             const price = 10; // Sostituisci con il prezzo desiderato o un calcolo da un API
+            const spiciness = getSpiciness(meal);
             return (
               <Col xs={24} sm={24} md={12} key={meal.idMeal}>
                 <Card
-                  title={meal.strMeal}
+                  title={
+                    <span>
+                      {meal.strMeal}
+                      {getSpicinessIcon(spiciness)}
+                    </span>
+                  }
                   bordered={true}
                   style={{ marginBottom: "20px" }}
                 >
@@ -174,27 +274,34 @@ const Menu = () => {
                     alt={meal.strMeal}
                     style={{
                       width: "100%",
-                      height: "200px",
+                      height: "150px", // Riduci l'altezza dell'immagine
                       objectFit: "cover",
                       borderRadius: "8px",
                       marginBottom: "10px",
                     }}
                   />
+                  <p>
+                    <strong>Ingredienti:</strong> {meal.strIngredient1},{" "}
+                    {meal.strIngredient2}, {meal.strIngredient3}, ...
+                  </p>{" "}
+                  {/* Mostra ingredienti qui */}
                   <QuantitySelector
                     mealId={meal.idMeal}
-                    onChange={(quantity) => {
-                      meal.quantity = quantity; // Aggiorna la quantità direttamente sull'oggetto pasto
-                    }}
+                    onChange={(quantity) =>
+                      handleQuantityChange(meal.idMeal, quantity)
+                    }
                   />
                   <Button
                     type="primary"
-                    onClick={() => addToCart({ 
-                      id: meal.idMeal, 
-                      title: meal.strMeal, 
-                      image: meal.strMealThumb, 
-                      price: price,  // Aggiungi il prezzo qui
-                      quantity: 1 // La quantità predefinita
-                    })}
+                    onClick={() =>
+                      addToCart({
+                        id: meal.idMeal,
+                        title: meal.strMeal,
+                        image: meal.strMealThumb,
+                        price: price,
+                        quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
+                      })
+                    }
                     style={{ width: "100%" }}
                   >
                     {translate("addToCart")}

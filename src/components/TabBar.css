@@ -7,12 +7,9 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: fixed; /* Fissa la tab bar in basso */
   bottom: 0;
+  height: 55px;
   width: 100%;
   z-index: 1000; /* Assicura che sia sopra altri elementi */
-}
-
-.badgeCart{
-
 }
 
 .tab-link {

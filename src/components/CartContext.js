@@ -11,11 +11,12 @@ export const CartProvider = ({ children }) => {
       // Incrementa la quantità se l'item è già nel carrello
       setCartItems(cartItems.map((cartItem) =>
         cartItem.id === item.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          ? { ...cartItem, quantity: cartItem.quantity + item.quantity } // Aggiorna la quantità con quella passata
           : cartItem
       ));
     } else {
-      setCartItems([...cartItems, { ...item, quantity: 1 }]);
+      // Aggiungi un nuovo elemento al carrello
+      setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
     }
   };
 

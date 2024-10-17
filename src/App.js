@@ -1,26 +1,30 @@
-// src/App.js
 import React from 'react';
-import { Route, Routes } from 'react-router-dom'; // Assicurati di importare BrowserRouter in un altro file come index.js
+import { Route, Routes } from 'react-router-dom';
 import Carrello from './pages/Carrello';
+import Menu from './pages/Menu';
+import Pagamento from './pages/Pagamento';
 import TabBar from './components/TabBar';
 import './App.css';
-import Menu from './pages/Menu';
 import { CartProvider } from './components/CartContext';
-import Pagamento from './pages/Pagamento';
+
+// Definizione del Layout
+const Layout = ({ children }) => (
+  <div className="layout-container">
+    <div className="content">{children}</div>
+    <TabBar /> {/* La TabBar viene visualizzata su tutte le pagine */}
+  </div>
+);
 
 function App() {
   return (
     <CartProvider>
-      <div className="app-container">
-        <div className="content">
-          <Routes>
-            <Route exact path="/qrmenu" element={<Menu />} />
-            <Route path="/carrello" element={<Carrello />} />
-            <Route path="/pagamento" element={<Pagamento />} /> {/* Cambiato 'component' in 'element' */}
-          </Routes>
-        </div>
-        <TabBar />
-      </div>
+      <Routes>
+        {/* Usa Layout per avvolgere le tue pagine */}
+        <Route exact path="/" element={<Layout><Menu /></Layout>} />
+        <Route path="/qrmenu" element={<Layout><Menu /></Layout>} />
+        <Route path="/carrello" element={<Layout><Carrello /></Layout>} />
+        <Route path="/pagamento" element={<Layout><Pagamento /></Layout>} />
+      </Routes>
     </CartProvider>
   );
 }

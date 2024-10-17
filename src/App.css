@@ -10,6 +10,7 @@ body {
 
 .content {
   text-align: left;
+  margin-bottom: 60px !important;
 }
 
 /* src/components/Menu.css */

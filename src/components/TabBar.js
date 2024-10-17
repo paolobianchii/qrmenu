@@ -10,15 +10,27 @@ const TabBar = ({ activeTab }) => {
 
   return (
     <nav className="tab-bar">
-      <NavLink exact to="/qrmenu" activeClassName="active" className={`tab-link ${activeTab === 'about' ? 'active' : ''}`}>
+      <NavLink
+        exact
+        to="/qrmenu"
+        activeClassName="active"
+        className={`tab-link ${activeTab === "about" ? "active" : ""}`}
+      >
         <MenuOutlined className="icon" /> {/* Icona del menu */}
         <span>Menu</span>
       </NavLink>
-      <NavLink to="/carrello" activeClassName="active" className={`tab-link ${activeTab === 'about' ? 'active' : ''}`}>
+      <NavLink
+        to="/carrello"
+        activeClassName="active"
+        className={`tab-link ${activeTab === "about" ? "active" : ""}`}
+      >
         <ShoppingCartOutlined className="icon" /> {/* Icona per Carrello */}
         <span>Carrello</span>
-        <Badge count={getTotalQuantity()} offset={[10, 0]} className="badgeCart">
-        </Badge>
+        <Badge
+          count={getTotalQuantity()}
+          offset={[20, -46]}
+          className="badgeCart"
+        ></Badge>
       </NavLink>
     </nav>
   );
