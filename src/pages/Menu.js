@@ -12,7 +12,6 @@ import {
 } from "antd";
 import { useCart } from "../components/CartContext";
 import { FaCoffee, FaLeaf, FaFire, FaDrumstickBite } from "react-icons/fa";
-import { FlagFilled } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -167,22 +166,22 @@ const Menu = () => {
         className="sticky-header"
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
           flexDirection: "row",
         }}
       >
-        <Title level={2}>{translate("menu")}</Title>
+        <Title level={2}>{/*{translate("menu")}*/}</Title>
         <Select
           value={language}
           onChange={handleLanguageChange}
-          style={{ width: 120, marginLeft: "auto", marginTop: 12 }}
+          style={{ width: 120, marginLeft: "auto", marginTop: 7 }}
         >
           <Option value="it">
-            <FlagFilled /> Italiano
+            Italiano
           </Option>
           <Option value="en">
-            <FlagFilled /> English
+            English
           </Option>
         </Select>
       </div>
@@ -196,6 +195,7 @@ const Menu = () => {
           backgroundColor: "transparent",
           borderRadius: "8px",
           marginTop: 15,
+          marginBottom:0
         }}
       >
         <Radio.Group
@@ -212,8 +212,12 @@ const Menu = () => {
               justifyContent: "space-between",
               alignItems: "center",
               flexDirection: "row",
-              backgroundColor: "#053EEF",
-              color: "#fff",
+              backgroundColor: "#fff",
+              border:"2px solid #053EEF",
+              color: "#053EEF",
+              borderRadius:10,
+              fontSize:15,
+              fontWeight:"600"
             }}
           >
             <FaCoffee /> {translate("all")}
@@ -227,8 +231,12 @@ const Menu = () => {
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
-              backgroundColor: "#5BA525",
-              color: "#fff",
+              backgroundColor: "#fff",
+              border:"2px solid #5BA525",
+              color: "#5BA525",
+              borderRadius:10,
+              fontSize:15,
+              fontWeight:"600"
             }}
           >
             <FaLeaf /> {translate("vegetarian")}
@@ -242,8 +250,12 @@ const Menu = () => {
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
-              backgroundColor: "#AA3C3B",
-              color: "#fff",
+              backgroundColor: "#fff",
+              border:"2px solid #AA3C3B",
+              color: "#AA3C3B",
+              borderRadius:10,
+              fontSize:15,
+              fontWeight:"600"
             }}
           >
             <FaFire /> {translate("beef")}
@@ -257,8 +269,12 @@ const Menu = () => {
               justifyContent: "center",
               alignItems: "center",
               flexDirection: "row",
-              backgroundColor: "#ECA237",
-              color: "#fff",
+              backgroundColor: "#fff",
+              border:"2px solid #ECA237",
+              color: "#ECA237",
+              borderRadius:10,
+              fontSize:15,
+              fontWeight:"600"
             }}
           >
             <FaDrumstickBite /> {translate("chicken")}
@@ -304,17 +320,17 @@ const Menu = () => {
                   <div style={{ flexGrow: 1, marginBottom: "10px" }}>
                   <span
                       style={{
-                        fontSize: "1.2rem",
+                        fontSize: "1.6rem",
                         fontWeight: "bold",
-                        color: "#333",
+                        color: "#282828",
                       }}
                     >
                       {meal.strMeal}
                     </span>
                     <p
                       style={{
-                        fontSize: "0.8rem",
-                        color: "#555",
+                        fontSize: "1.1rem",
+                        color: "#282828",
                         marginBottom: "5px",
                       }}
                     >
@@ -325,7 +341,7 @@ const Menu = () => {
                         paddingLeft: "10px",
                         margin: 0,
                         listStyleType: "disc",
-                        fontSize: "0.8rem",
+                        fontSize: "0.9rem",
                       }}
                     >
                       <li>{meal.strIngredient1}</li>
