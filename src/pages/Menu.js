@@ -276,75 +276,110 @@ const Menu = () => {
               <Col xs={24} sm={24} md={12} key={meal.idMeal}>
                 <Card
                   style={{
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+                    padding: "15px", // Ridotto per dispositivi mobili
+                    margin: "10px", // Spaziatura più contenuta
                     display: "flex",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    flexDirection: "row-reverse",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    transition: "transform 0.2s ease, box-shadow 0.3s ease",
                   }}
-                  title={
-                    <>
-                      <QuantitySelector
-                        mealId={meal.idMeal}
-                        onChange={(quantity) =>
-                          handleQuantityChange(meal.idMeal, quantity)
-                        }
-                      />
-                    </>
-                  }
-                  bordered={true}
+
+                  bordered={false}
                 >
-                  <span
-                    style={{
-                      fontSize: 20,
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                    }}
-                  >
-                    {meal.strMeal}
-                  </span>
-                  <p style={{ width: "100%", height: "100%" }}>
-                    <strong>Ingredienti:</strong> {meal.strIngredient1},
-                    {meal.strIngredient2}, {meal.strIngredient3}, ...
-                  </p>
                   <img
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
                     style={{
-                      width: "100%",
-                      height: "160px", // Riduci l'altezza dell'immagine
+                      height: "160px", // Altezza ridotta per un layout mobile
+                      width:"100%",
                       objectFit: "cover",
                       borderRadius: "8px",
-                      marginBottom: "5px",
+                      marginBottom: "10px",
+                      border: "1px solid #e0e0e0",
                     }}
                   />
 
-                  {/* Mostra ingredienti qui */}
+                  <div style={{ flexGrow: 1, marginBottom: "10px" }}>
+                  <span
+                      style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "bold",
+                        color: "#333",
+                      }}
+                    >
+                      {meal.strMeal}
+                    </span>
+                    <p
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "#555",
+                        marginBottom: "5px",
+                      }}
+                    >
+                      <strong>Ingredienti:</strong>
+                    </p>
+                    <ul
+                      style={{
+                        paddingLeft: "10px",
+                        margin: 0,
+                        listStyleType: "disc",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      <li>{meal.strIngredient1}</li>
+                      <li>{meal.strIngredient2}</li>
+                      <li>{meal.strIngredient3}</li>
+                      {/* Aggiungi ulteriori ingredienti se necessario */}
+                    </ul>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "stretch",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <QuantitySelector
+                      mealId={meal.idMeal}
+                      onChange={(quantity) =>
+                        handleQuantityChange(meal.idMeal, quantity)
+                      }
+                      style={{ marginBottom: "10px", width: "100%" }} // Larghezza al 100% per il selettore di quantità
+                    />
+                    <hr></hr>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        addToCart({
+                          id: meal.idMeal,
+                          title: meal.strMeal,
+                          image: meal.strMealThumb,
+                          price: price,
+                          quantity: quantities[meal.idMeal] || 1,
+                        });
+                        notifyAddToCart(meal);
+                      }}
+                      style={{
+                        width: "100%", // Larghezza al 100% per il pulsante
+                        padding: "12px", // Padding maggiore per migliorare l'usabilità
+                        fontSize: "1rem",
+                        fontWeight: "600",
+                        backgroundColor: "#fff",
+                        border: "1.5px solid #053EEF",
+                        height:40,
+                        color: "#053EEF",
+                        transition:
+                          "background-color 0.3s ease, transform 0.2s ease",
+                      }}
+                    >
+                      + {translate("addToCart")}
+                    </Button>
+                  </div>
                 </Card>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    addToCart({
-                      id: meal.idMeal,
-                      title: meal.strMeal,
-                      image: meal.strMealThumb,
-                      price: price,
-                      quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
-                    });
-                    notifyAddToCart(meal);
-                  }}
-                  style={{
-                    width: "100%",
-                    padding: 20,
-                    fontSize: 16,
-                    fontWeight: "600",
-                    backgroundColor: "#fff",
-                    border: "1.6px solid #053EEF",
-                    color: "#053EEF",
-                  }}
-                >
-                  + {translate("addToCart")}
-                </Button>
               </Col>
             );
           })}
