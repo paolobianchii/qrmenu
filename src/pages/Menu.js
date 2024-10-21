@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Button, Typography, Spin, Radio, Select } from "antd";
-import { useCart } from "../components/CartContext";
 import {
-  FaCoffee,
-  FaLeaf,
-  FaFire,
-  FaDrumstickBite,
-  FaPepperHot,
-  FaAdjust,
-} from "react-icons/fa";
+  Card,
+  Row,
+  Col,
+  Button,
+  Typography,
+  Spin,
+  Radio,
+  Select,
+  notification,
+} from "antd";
+import { useCart } from "../components/CartContext";
+import { FaCoffee, FaLeaf, FaFire, FaDrumstickBite } from "react-icons/fa";
 import { FlagFilled } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -148,6 +151,14 @@ const Menu = () => {
   const handleLanguageChange = (value) => {
     setLanguage(value);
     localStorage.setItem("language", value);
+  };
+
+  const notifyAddToCart = (meal) => {
+    notification.success({
+      message: `Aggiunto al carrello`,
+      description: `${meal.strMeal} è stato aggiunto al carrello.`,
+      placement: "topRight",
+    });
   };
 
   return (
@@ -309,29 +320,31 @@ const Menu = () => {
                   />
 
                   {/* Mostra ingredienti qui */}
-                
                 </Card>
                 <Button
-                    type="primary"
-                    onClick={() =>
-                      addToCart({
-                        id: meal.idMeal,
-                        title: meal.strMeal,
-                        image: meal.strMealThumb,
-                        price: price,
-                        quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
-                      })
-                    }
-                    style={{
-                      width: "100%",
-                      padding: 20,
-                      fontSize: 16,
-                      fontWeight: "600",
-                      backgroundColor: "#053EEF",
-                    }}
-                  >
-                    + {translate("addToCart")}
-                  </Button>
+                  type="primary"
+                  onClick={() => {
+                    addToCart({
+                      id: meal.idMeal,
+                      title: meal.strMeal,
+                      image: meal.strMealThumb,
+                      price: price,
+                      quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
+                    });
+                    notifyAddToCart(meal);
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: 20,
+                    fontSize: 16,
+                    fontWeight: "600",
+                    backgroundColor: "#fff",
+                    border: "1.6px solid #053EEF",
+                    color: "#053EEF",
+                  }}
+                >
+                  + {translate("addToCart")}
+                </Button>
               </Col>
             );
           })}

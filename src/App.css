@@ -1,21 +1,23 @@
 body {
-  font-family: 'Inter', sans-serif; /* Applica il font Inter a tutto il corpo */
+  font-family: "Inter", sans-serif; /* Applica il font Inter a tutto il corpo */
   padding: 0;
   margin: 0;
 }
 
-
-
 .content {
   text-align: left;
   min-height: 100vh; /* Copre almeno l'altezza della viewport */
-  background-image: url('../src//assets/img/background.jpg'); /* Inserisci qui il percorso della tua immagine di sfondo */
+  background-image: url("../src//assets/img/background.jpg"); /* Inserisci qui il percorso della tua immagine di sfondo */
   background-size: cover; /* Contiene l'immagine nella pagina */
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed; /* Blocca l'immagine durante lo scroll */
-  background-color: rgba(255, 255, 255, 0.2); /* Colore bianco con 50% di trasparenza */
-
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.2
+  ); /* Colore bianco con 50% di trasparenza */
 }
 
 /* src/components/Menu.css */
