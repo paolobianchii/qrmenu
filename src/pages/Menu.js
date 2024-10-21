@@ -158,14 +158,14 @@ const Menu = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          flexDirection:"row"
+          flexDirection: "row",
         }}
       >
         <Title level={2}>{translate("menu")}</Title>
         <Select
           value={language}
           onChange={handleLanguageChange}
-          style={{ width: 120, marginLeft: "auto", marginTop:12 }}
+          style={{ width: 120, marginLeft: "auto", marginTop: 12 }}
         >
           <Option value="it">
             <FlagFilled /> Italiano
@@ -200,12 +200,12 @@ const Menu = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              flexDirection:"row",
-              backgroundColor:"#053EEF",
-              color:"#fff"
+              flexDirection: "row",
+              backgroundColor: "#053EEF",
+              color: "#fff",
             }}
           >
-            <FaCoffee/> {translate("all")}
+            <FaCoffee /> {translate("all")}
           </Radio.Button>
           <Radio.Button
             value="Vegetarian"
@@ -215,9 +215,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              flexDirection:"row",
-              backgroundColor:"#5BA525",
-              color:"#fff"
+              flexDirection: "row",
+              backgroundColor: "#5BA525",
+              color: "#fff",
             }}
           >
             <FaLeaf /> {translate("vegetarian")}
@@ -230,9 +230,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              flexDirection:"row",
-              backgroundColor:"#AA3C3B",
-              color:"#fff"
+              flexDirection: "row",
+              backgroundColor: "#AA3C3B",
+              color: "#fff",
             }}
           >
             <FaFire /> {translate("beef")}
@@ -245,9 +245,9 @@ const Menu = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              flexDirection:"row",
-              backgroundColor:"#ECA237",
-              color:"#fff"
+              flexDirection: "row",
+              backgroundColor: "#ECA237",
+              color: "#fff",
             }}
           >
             <FaDrumstickBite /> {translate("chicken")}
@@ -258,27 +258,44 @@ const Menu = () => {
       {loading ? (
         <Spin size="large" style={{ margin: "20px auto", display: "block" }} />
       ) : meals.length > 0 ? (
-        <Row gutter={[16, 16]} style={{marginLeft:0, marginRight:0}}>
+        <Row gutter={[16, 16]} style={{ marginLeft: 0, marginRight: 0 }}>
           {filteredMeals.map((meal) => {
             const price = 10; // Sostituisci con il prezzo desiderato o un calcolo da un API
             return (
               <Col xs={24} sm={24} md={12} key={meal.idMeal}>
                 <Card
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    flexDirection: "row-reverse",
+                  }}
                   title={
-                    <span
-                      style={{
-                        fontSize: 20,
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        
-                      }}
-                    >
-                      {meal.strMeal}
-                    </span>
+                    <>
+                      <QuantitySelector
+                        mealId={meal.idMeal}
+                        onChange={(quantity) =>
+                          handleQuantityChange(meal.idMeal, quantity)
+                        }
+                      />
+                    </>
                   }
                   bordered={true}
                 >
+                  <span
+                    style={{
+                      fontSize: 20,
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    {meal.strMeal}
+                  </span>
+                  <p style={{ width: "100%", height: "100%" }}>
+                    <strong>Ingredienti:</strong> {meal.strIngredient1},
+                    {meal.strIngredient2}, {meal.strIngredient3}, ...
+                  </p>
                   <img
                     src={meal.strMealThumb}
                     alt={meal.strMeal}
@@ -290,18 +307,11 @@ const Menu = () => {
                       marginBottom: "5px",
                     }}
                   />
-                  <p style={{ width: "100%", height: "100%" }}>
-                    <strong>Ingredienti:</strong> {meal.strIngredient1},
-                    {meal.strIngredient2}, {meal.strIngredient3}, ...
-                  </p>
+
                   {/* Mostra ingredienti qui */}
-                  <QuantitySelector
-                    mealId={meal.idMeal}
-                    onChange={(quantity) =>
-                      handleQuantityChange(meal.idMeal, quantity)
-                    }
-                  />
-                  <Button
+                
+                </Card>
+                <Button
                     type="primary"
                     onClick={() =>
                       addToCart({
@@ -312,11 +322,16 @@ const Menu = () => {
                         quantity: quantities[meal.idMeal] || 1, // Usa la quantità selezionata o 1 di default
                       })
                     }
-                    style={{ width: "100%", padding: 20, fontSize:16, fontWeight:"600", backgroundColor:"#053EEF" }}
+                    style={{
+                      width: "100%",
+                      padding: 20,
+                      fontSize: 16,
+                      fontWeight: "600",
+                      backgroundColor: "#053EEF",
+                    }}
                   >
                     + {translate("addToCart")}
                   </Button>
-                </Card>
               </Col>
             );
           })}
