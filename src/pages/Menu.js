@@ -11,7 +11,7 @@ import {
   notification,
 } from "antd";
 import { useCart } from "../components/CartContext";
-import { FaCoffee, FaLeaf, FaFire, FaDrumstickBite } from "react-icons/fa";
+import { FaUtensils, FaPizzaSlice, FaHamburger, FaIceCream } from "react-icons/fa";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -36,7 +36,7 @@ const QuantitySelector = ({ mealId, onChange }) => {
       style={{
         display: "flex",
         alignItems: "center",
-        marginBottom: "10px",
+
         justifyContent: "flex-end",
       }}
     >
@@ -108,8 +108,14 @@ const Menu = () => {
     setSelectedCategory(category);
     if (category === "All") {
       setFilteredMeals(meals);
-    } else {
-      const filtered = meals.filter((meal) => meal.strCategory === category);
+    } else if (category === "Primi Piatti") {
+      const filtered = meals.filter((meal) => meal.strCategory === "Pasta" || meal.strCategory === "Soup");
+      setFilteredMeals(filtered);
+    } else if (category === "Secondi Piatti") {
+      const filtered = meals.filter((meal) => meal.strCategory === "Beef" || meal.strCategory === "Chicken");
+      setFilteredMeals(filtered);
+    } else if (category === "Dessert") {
+      const filtered = meals.filter((meal) => meal.strCategory === "Dessert");
       setFilteredMeals(filtered);
     }
   };
@@ -127,9 +133,9 @@ const Menu = () => {
         menu: "Menu",
         filter: "Filtra per categoria",
         all: "Tutti",
-        vegetarian: "Vegetariani",
-        beef: "Carne",
-        chicken: "Pollo",
+        primi: "Primi Piatti",
+        secondi: "Secondi Piatti",
+        dessert: "Dessert",
         addToCart: "Aggiungi al carrello",
         noMealsFound: "Nessun pasto trovato.",
       },
@@ -137,9 +143,9 @@ const Menu = () => {
         menu: "Menu",
         filter: "Filter by category",
         all: "All",
-        vegetarian: "Vegetarian",
-        beef: "Beef",
-        chicken: "Chicken",
+        primi: "First Courses",
+        secondi: "Second Courses",
+        dessert: "Dessert",
         addToCart: "Add to cart",
         noMealsFound: "No meals found.",
       },
@@ -171,18 +177,14 @@ const Menu = () => {
           flexDirection: "row",
         }}
       >
-        <Title level={2}>{/*{translate("menu")}*/}</Title>
+        <Title level={2} style={{marginLeft:10}}>{translate("menu")}</Title>
         <Select
           value={language}
           onChange={handleLanguageChange}
           style={{ width: 120, marginLeft: "auto", marginTop: 7 }}
         >
-          <Option value="it">
-            Italiano
-          </Option>
-          <Option value="en">
-            English
-          </Option>
+          <Option value="it">Italiano</Option>
+          <Option value="en">English</Option>
         </Select>
       </div>
 
@@ -195,7 +197,7 @@ const Menu = () => {
           backgroundColor: "transparent",
           borderRadius: "8px",
           marginTop: 15,
-          marginBottom:0
+          marginBottom: 0,
         }}
       >
         <Radio.Group
@@ -213,17 +215,15 @@ const Menu = () => {
               alignItems: "center",
               flexDirection: "row",
               backgroundColor: "#fff",
-              border:"2px solid #053EEF",
               color: "#053EEF",
-              borderRadius:10,
-              fontSize:15,
-              fontWeight:"600"
+              fontSize: 15,
+              fontWeight: "600",
             }}
           >
-            <FaCoffee /> {translate("all")}
+            <FaUtensils /> {translate("all")}
           </Radio.Button>
           <Radio.Button
-            value="Vegetarian"
+            value="Primi Piatti"
             style={{
               margin: "0 10px",
               padding: 18,
@@ -232,17 +232,15 @@ const Menu = () => {
               alignItems: "center",
               flexDirection: "row",
               backgroundColor: "#fff",
-              border:"2px solid #5BA525",
-              color: "#5BA525",
-              borderRadius:10,
-              fontSize:15,
-              fontWeight:"600"
+              color: "#053EEF",
+              fontSize: 15,
+              fontWeight: "600",
             }}
           >
-            <FaLeaf /> {translate("vegetarian")}
+            <FaPizzaSlice /> {translate("primi")}
           </Radio.Button>
           <Radio.Button
-            value="Beef"
+            value="Secondi Piatti"
             style={{
               margin: "0 10px",
               padding: 18,
@@ -251,17 +249,15 @@ const Menu = () => {
               alignItems: "center",
               flexDirection: "row",
               backgroundColor: "#fff",
-              border:"2px solid #AA3C3B",
-              color: "#AA3C3B",
-              borderRadius:10,
-              fontSize:15,
-              fontWeight:"600"
+              color: "#053EEF",
+              fontSize: 15,
+              fontWeight: "600",
             }}
           >
-            <FaFire /> {translate("beef")}
+            <FaHamburger /> {translate("secondi")}
           </Radio.Button>
           <Radio.Button
-            value="Chicken"
+            value="Dessert"
             style={{
               margin: "0 10px",
               padding: 18,
@@ -270,14 +266,12 @@ const Menu = () => {
               alignItems: "center",
               flexDirection: "row",
               backgroundColor: "#fff",
-              border:"2px solid #ECA237",
-              color: "#ECA237",
-              borderRadius:10,
-              fontSize:15,
-              fontWeight:"600"
+              color: "#053EEF",
+              fontSize: 15,
+              fontWeight: "600",
             }}
           >
-            <FaDrumstickBite /> {translate("chicken")}
+            <FaIceCream /> {translate("dessert")}
           </Radio.Button>
         </Radio.Group>
       </div>
@@ -285,7 +279,7 @@ const Menu = () => {
       {loading ? (
         <Spin size="large" style={{ margin: "20px auto", display: "block" }} />
       ) : meals.length > 0 ? (
-        <Row gutter={[16, 16]} style={{ marginLeft: 0, marginRight: 0 }}>
+        <Row gutter={[16, 16]} style={{ marginLeft: 0, marginRight: 0, paddingBottom:100 }}>
           {filteredMeals.map((meal) => {
             const price = 10; // Sostituisci con il prezzo desiderato o un calcolo da un API
             return (
@@ -301,7 +295,6 @@ const Menu = () => {
                     justifyContent: "space-between",
                     transition: "transform 0.2s ease, box-shadow 0.3s ease",
                   }}
-
                   bordered={false}
                 >
                   <img
@@ -309,47 +302,12 @@ const Menu = () => {
                     alt={meal.strMeal}
                     style={{
                       height: "160px", // Altezza ridotta per un layout mobile
-                      width:"100%",
+                      width: "100%",
                       objectFit: "cover",
-                      borderRadius: "8px",
+                      borderRadius: "5px",
                       marginBottom: "10px",
-                      border: "1px solid #e0e0e0",
                     }}
                   />
-
-                  <div style={{ flexGrow: 1, marginBottom: "10px" }}>
-                  <span
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "bold",
-                        color: "#282828",
-                      }}
-                    >
-                      {meal.strMeal}
-                    </span>
-                    <p
-                      style={{
-                        fontSize: "1.1rem",
-                        color: "#282828",
-                        marginBottom: "5px",
-                      }}
-                    >
-                      <strong>Ingredienti:</strong>
-                    </p>
-                    <ul
-                      style={{
-                        paddingLeft: "10px",
-                        margin: 0,
-                        listStyleType: "disc",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      <li>{meal.strIngredient1}</li>
-                      <li>{meal.strIngredient2}</li>
-                      <li>{meal.strIngredient3}</li>
-                      {/* Aggiungi ulteriori ingredienti se necessario */}
-                    </ul>
-                  </div>
 
                   <div
                     style={{
@@ -359,13 +317,68 @@ const Menu = () => {
                       marginTop: "10px",
                     }}
                   >
-                    <QuantitySelector
-                      mealId={meal.idMeal}
-                      onChange={(quantity) =>
-                        handleQuantityChange(meal.idMeal, quantity)
-                      }
-                      style={{ marginBottom: "10px", width: "100%" }} // Larghezza al 100% per il selettore di quantità
-                    />
+                    <div style={{ flexGrow: 1 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "1.6rem",
+                            fontWeight: "bold",
+                            color: "#282828",
+                          }}
+                        >
+                          {meal.strMeal}
+                        </span>
+                        <QuantitySelector
+                          mealId={meal.idMeal}
+                          onChange={(quantity) =>
+                            handleQuantityChange(meal.idMeal, quantity)
+                          }
+                          style={{ width: "auto" }}
+                        />
+                      </div>
+
+                      <p
+                        style={{
+                          fontSize: "1.1rem",
+                          color: "#282828",
+                          marginBottom: "5px",
+                        }}
+                      >
+                        <strong>Ingredienti:</strong>
+                      </p>
+                      <ul
+                        style={{
+                          paddingLeft: "0px",
+                          margin: 0,
+                          listStyleType: "none",
+                          fontSize: "0.9rem",
+                          display: "flex",
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {[
+                          meal.strIngredient1,
+                          meal.strIngredient2,
+                          meal.strIngredient3,
+                        ]
+                          .filter(Boolean)
+                          .map((ingredient, index) => (
+                            <li
+                              key={index}
+                              style={{ marginRight: "5px", color: "#888" }}
+                            >
+                              {ingredient}
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
                     <hr></hr>
                     <Button
                       type="primary"
@@ -386,13 +399,13 @@ const Menu = () => {
                         fontWeight: "600",
                         backgroundColor: "#fff",
                         border: "1.5px solid #053EEF",
-                        height:40,
+                        height: 40,
                         color: "#053EEF",
                         transition:
                           "background-color 0.3s ease, transform 0.2s ease",
                       }}
                     >
-                      + {translate("addToCart")}
+                      {translate("addToCart")}
                     </Button>
                   </div>
                 </Card>
