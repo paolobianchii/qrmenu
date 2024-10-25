@@ -5,36 +5,41 @@ import { Badge } from "antd";
 import { useCart } from "./CartContext";
 import "./TabBar.css";
 
-const TabBar = ({ activeTab }) => {
-  const { getTotalQuantity, totalPrice,getTotalProducts } = useCart(); // Recupera la funzione per ottenere il totale degli articoli
+const TabBar = () => {
+  const { getTotalQuantity, totalPrice } = useCart();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <nav className="tab-bar">
       <NavLink
-        exact
+        exact="true"
         to="/qrmenu"
         activeClassName="active"
-        className={`tab-link ${activeTab === "menu" ? "active" : ""}`}
+        className="tab-link"
+        onClick={scrollToTop} 
       >
-        <MenuOutlined className="icon" /> {/* Icona del menu */}
-        <span style={{marginLeft:10}}>Menu</span>
+        <MenuOutlined className="icon" />
+        <span style={{ marginLeft: 10 }}>Menu</span>
       </NavLink>
       <NavLink
         to="/carrello"
         activeClassName="active"
-        className={`tab-link ${activeTab === "carrello" ? "active" : ""}`}
+        className="tab-link"
       >
-        <ShoppingCartOutlined className="icon" style={{fontSize:18}}/> {/* Icona per Carrello */}
-        <span style={{marginLeft:10}}></span>
+        <ShoppingCartOutlined className="icon" style={{ fontSize: 18 }} />
+        <span style={{ marginLeft: 10 }}></span>
         <Badge
-          count={getTotalQuantity()} // Mostra il numero totale di articoli nel carrello
-          offset={[0, -0]} // Regola la posizione del Badge
+          count={getTotalQuantity()}
+          offset={[0, -0]}
           className="badgeCart"
         />
         <Badge
-          count={`${totalPrice} €`}  // Mostra il prezzo totale nel badge
-          offset={[10, 0]} // Regola la posizione del Badge
-          style={{color:"#fff", fontSize:12, fontWeight:"600", backgroundColor:"transparent"}}
+          count={`${totalPrice} €`}
+          offset={[10, 0]}
+          style={{ color: "#fff", fontSize: 12, fontWeight: "600", backgroundColor: "transparent" }}
         />
       </NavLink>
     </nav>

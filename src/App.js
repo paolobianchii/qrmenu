@@ -21,7 +21,7 @@ function App() {
       <Routes>
         {/* Usa Layout per avvolgere le tue pagine */}
         <Route
-          exact
+          exact = "true"
           path="/"
           element={
             <Layout>

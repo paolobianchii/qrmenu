@@ -5,6 +5,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
+  // Carica i dati dal localStorage al caricamento della pagina
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
     if (storedCartItems) {
@@ -12,37 +13,43 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-  // Effetto per salvare il carrello nel localStorage
+  // Salva i dati del carrello nel localStorage ogni volta che `cartItems` cambia
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   const addToCart = (item) => {
-    const existingItem = cartItems.find((cartItem) => cartItem.id === item.id);
-    if (existingItem) {
-      // Incrementa la quantità se l'item è già nel carrello
-      setCartItems(
-        cartItems.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + item.quantity } // Aggiorna la quantità con quella passata
-            : cartItem
-        )
-      );
-    } else {
-      // Aggiungi un nuovo elemento al carrello
-      setCartItems([...cartItems, { ...item, quantity: item.quantity }]);
-    }
-  };
-  const getTotalProducts = () => {
-    return cartItems.length; // Conta il numero di prodotti unici nel carrello
-  };
-  const removeFromCart = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    const existingItemIndex = cartItems.findIndex((i) => i.id === item.id);
+  
+  if (existingItemIndex > -1) {
+    // Se esiste già, aggiorna la quantità
+    const updatedItems = [...cartItems];
+    updatedItems[existingItemIndex].quantity += item.quantity; // Aggiungi alla quantità esistente
+    setCartItems(updatedItems);
+  } else {
+    // Se non esiste, aggiungi nuovo elemento
+    setCartItems([...cartItems, item]);
+  }
   };
 
+  const updateQuantity = (id, quantityChange) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity + quantityChange } // Aggiorna la quantità
+          : item
+      )
+    );
+  };
+
+  const getTotalProducts = () => cartItems.length;
+
+  const removeFromCart = (mealId) => {
+  setCartItems((prevItems) => prevItems.filter((item) => item.id !== mealId));
+};
   const clearCart = () => {
-    setCartItems([]); // Resetta lo stato del carrello
-    localStorage.removeItem("cartItems"); // Rimuovi il carrello dal localStorage
+    setCartItems([]);
+    localStorage.removeItem("cartItems");
   };
 
   const totalQuantity = cartItems.reduce(
@@ -50,11 +57,11 @@ export const CartProvider = ({ children }) => {
     0
   );
 
-  const getTotalQuantity = () => totalQuantity; // Aggiungi questa funzione
+  const getTotalQuantity = () => totalQuantity;
 
   const totalPrice = cartItems
     .reduce((total, item) => total + item.price * item.quantity, 0)
-    .toFixed(2); // Calcola il totale e formatta a 2 decimali
+    .toFixed(2);
 
   return (
     <CartContext.Provider
@@ -66,6 +73,7 @@ export const CartProvider = ({ children }) => {
         getTotalQuantity,
         totalPrice,
         addToCart,
+        updateQuantity,
         removeFromCart,
       }}
     >

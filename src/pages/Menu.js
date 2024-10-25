@@ -11,24 +11,28 @@ import {
   notification,
 } from "antd";
 import { useCart } from "../components/CartContext";
-import { FaUtensils, FaPizzaSlice, FaHamburger, FaIceCream } from "react-icons/fa";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+
+import { FrownOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
 
-const QuantitySelector = ({ mealId, onChange }) => {
-  const [quantity, setQuantity] = useState(1);
+// Componente per la selezione della quantità
+const QuantitySelector = ({ mealId, meal, onQuantityChange }) => {
+  const { cartItems } = useCart();
+  const existingItem = cartItems.find((item) => item.id === mealId);
+  const initialQuantity = existingItem ? existingItem.quantity : 0;
+  const [quantity, setQuantity] = useState(initialQuantity);
 
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
-    onChange(quantity + 1);
-  };
+  useEffect(() => {
+    setQuantity(existingItem ? existingItem.quantity : 0);
+  }, [existingItem]);
 
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-      onChange(quantity - 1);
-    }
+  const handleChange = (newQuantity) => {
+    if (newQuantity < 0) return; // Previene la quantità negativa
+    setQuantity(newQuantity);
+    onQuantityChange(mealId, meal, newQuantity - initialQuantity); // Passa la differenza
   };
 
   return (
@@ -36,18 +40,13 @@ const QuantitySelector = ({ mealId, onChange }) => {
       style={{
         display: "flex",
         alignItems: "center",
-
-        justifyContent: "flex-end",
+        justifyContent: "center",
+        width: "100%",
       }}
     >
       <Button
-        onClick={handleDecrement}
-        style={{
-          fontSize: 25,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+        onClick={() => handleChange(quantity - 1)}
+        style={{ fontSize: 25, width: "30%" }}
       >
         -
       </Button>
@@ -55,13 +54,8 @@ const QuantitySelector = ({ mealId, onChange }) => {
         {quantity}
       </span>
       <Button
-        onClick={handleIncrement}
-        style={{
-          fontSize: 25,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
+        onClick={() => handleChange(quantity + 1)}
+        style={{ fontSize: 25, width: "30%" }}
       >
         +
       </Button>
@@ -69,6 +63,7 @@ const QuantitySelector = ({ mealId, onChange }) => {
   );
 };
 
+// Componente principale del menu
 const Menu = () => {
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -76,13 +71,15 @@ const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [language, setLanguage] = useState("it");
   const { addToCart } = useCart();
+  const [subFilters, setSubFilters] = useState([]);
 
-  // Stato per memorizzare la quantità selezionata per ogni pasto
   const [quantities, setQuantities] = useState({});
+  const [filterTitle, setFilterTitle] = useState("Tutti i Prodotti"); // Aggiungi il titolo del filtro
 
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") || "it";
     setLanguage(storedLanguage);
+
     const fetchMeals = async () => {
       setLoading(true);
       try {
@@ -92,7 +89,7 @@ const Menu = () => {
         const data = await response.json();
         if (data.meals) {
           setMeals(data.meals);
-          setFilteredMeals(data.meals);
+          setFilteredMeals(data.meals); // Imposta subito tutti i pasti su filteredMeals
         }
       } catch (error) {
         console.error("Error fetching meals:", error);
@@ -104,27 +101,111 @@ const Menu = () => {
     fetchMeals();
   }, []);
 
-  const filterMeals = (category) => {
-    setSelectedCategory(category);
-    if (category === "All") {
+  const handleFilterChange = (value) => {
+    setSelectedCategory(value);
+    setLoading(true); // Imposta loading a true quando si avvia il filtro
+
+    window.scrollTo(0, 0);
+
+    if (value === "All") {
       setFilteredMeals(meals);
-    } else if (category === "Primi Piatti") {
-      const filtered = meals.filter((meal) => meal.strCategory === "Pasta" || meal.strCategory === "Soup");
-      setFilteredMeals(filtered);
-    } else if (category === "Secondi Piatti") {
-      const filtered = meals.filter((meal) => meal.strCategory === "Beef" || meal.strCategory === "Chicken");
-      setFilteredMeals(filtered);
-    } else if (category === "Dessert") {
-      const filtered = meals.filter((meal) => meal.strCategory === "Dessert");
-      setFilteredMeals(filtered);
+      setSubFilters([]);
+      setFilterTitle("Tutti i Prodotti");
+    } else {
+      switch (value) {
+        case "Primi Piatti":
+          setFilterTitle("Filtro per: Primi Piatti");
+          setSubFilters(["Pasta", "Riso"]);
+          setFilteredMeals(
+            meals.filter(
+              (meal) =>
+                meal.strCategory === "Pasta" || meal.strCategory === "Rice"
+            )
+          );
+          break;
+        case "Secondi Piatti":
+          setFilterTitle("Filtro per: Secondi Piatti");
+          setSubFilters(["Carne", "Pesce"]);
+          setFilteredMeals(
+            meals.filter(
+              (meal) =>
+                meal.strCategory === "Beef" ||
+                meal.strCategory === "Chicken" ||
+                meal.strCategory === "Pork" ||
+                meal.strCategory === "Seafood"
+            )
+          );
+          break;
+        case "Dessert":
+          setFilterTitle("Filtro per: Dessert");
+          setSubFilters(["Gelato", "Torta"]);
+          setFilteredMeals(
+            meals.filter(
+              (meal) =>
+                meal.strCategory === "Dessert" ||
+                meal.strCategory === "Cake" ||
+                meal.strCategory === "Ice Cream"
+            )
+          );
+          break;
+        default:
+          setFilterTitle("Tutti i Prodotti");
+          setFilteredMeals(meals);
+      }
     }
+
+    // Imposta `loading` su `false` dopo un breve ritardo per simulare il caricamento
+    setTimeout(() => {
+      setLoading(false);
+    }, 400); // Aggiungi un ritardo per rendere più fluida la transizione
   };
 
-  const handleQuantityChange = (mealId, quantity) => {
-    setQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [mealId]: quantity,
-    }));
+  const filterMeals = (category, filter) => {
+    let filtered = [];
+
+    if (category === "Primi Piatti") {
+      filtered = meals.filter((meal) =>
+        filter === "Pasta"
+          ? meal.strCategory === "Pasta"
+          : meal.strCategory === "Rice"
+      );
+    } else if (category === "Secondi Piatti") {
+      filtered = meals.filter((meal) =>
+        filter === "Carne"
+          ? meal.strCategory.includes("Beef") ||
+            meal.strCategory.includes("Chicken") ||
+            meal.strCategory.includes("Pork")
+          : meal.strCategory.includes("Seafood")
+      );
+    } else if (category === "Dessert") {
+      filtered = meals.filter((meal) =>
+        filter === "Gelato"
+          ? meal.strCategory === "Ice Cream"
+          : meal.strCategory === "Cake"
+      );
+    }
+
+    setFilteredMeals(filtered);
+  };
+
+  const handleQuantityChange = (mealId, meal, quantityChange) => {
+    const newQuantity = (quantities[mealId] || 0) + quantityChange;
+
+    if (newQuantity > 0) {
+      addToCart({
+        id: mealId,
+        title: meal.strMeal,
+        image: meal.strMealThumb,
+        price: 10, // Sostituisci con il prezzo reale
+        quantity: newQuantity,
+      });
+      setQuantities({ ...quantities, [mealId]: newQuantity });
+      notifyAddToCart(meal);
+    } else {
+      // Rimuovi il pasto dal carrello se la quantità è zero o inferiore
+      const { [mealId]: _, ...rest } = quantities;
+      setQuantities(rest);
+    }
   };
 
   const translate = (key) => {
@@ -160,9 +241,9 @@ const Menu = () => {
 
   const notifyAddToCart = (meal) => {
     notification.success({
-      message: `Aggiunto al carrello`,
-      description: `${meal.strMeal} è stato aggiunto al carrello.`,
-      placement: "topRight",
+      message: translate("addToCart"),
+      description: `${meal.strMeal} ${translate("addedToCart")}`,
+      placement: "bottomRight",
     });
   };
 
@@ -171,17 +252,31 @@ const Menu = () => {
       <div
         className="sticky-header"
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
           flexDirection: "row",
+          zIndex: 1000,
+          backgroundColor: "#fff",
+          padding: "10px 0",
         }}
       >
-        <Title level={2} style={{marginLeft:10}}>{translate("menu")}</Title>
+        <Title level={2} style={{ marginLeft: 20 }}>
+          {translate("menu")}
+        </Title>
         <Select
           value={language}
           onChange={handleLanguageChange}
-          style={{ width: 120, marginLeft: "auto", marginTop: 7 }}
+          style={{
+            width: 120,
+            marginLeft: "auto",
+            marginTop: 7,
+            marginRight: 10,
+          }}
         >
           <Option value="it">Italiano</Option>
           <Option value="en">English</Option>
@@ -191,233 +286,137 @@ const Menu = () => {
       <div
         className="filter-container"
         style={{
+          position: "fixed",
+          top: 55,
+          left: 0,
+          width: "100%",
           overflowX: "auto",
           whiteSpace: "nowrap",
           padding: "5px",
-          backgroundColor: "transparent",
+          backgroundColor: "#fff",
           borderRadius: "8px",
           marginTop: 15,
           marginBottom: 0,
+          zIndex: 1000,
         }}
       >
         <Radio.Group
           value={selectedCategory}
-          onChange={(e) => filterMeals(e.target.value)}
+          onChange={(e) => handleFilterChange(e.target.value)}
           style={{ display: "flex", justifyContent: "flex-start" }}
         >
-          <Radio.Button
-            value="All"
-            style={{
-              margin: "0 10px",
-              padding: 18,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              color: "#053EEF",
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          >
-            <FaUtensils /> {translate("all")}
+          <Radio.Button value="All" style={buttonStyle}>
+            {translate("all")}
           </Radio.Button>
-          <Radio.Button
-            value="Primi Piatti"
-            style={{
-              margin: "0 10px",
-              padding: 18,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              color: "#053EEF",
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          >
-            <FaPizzaSlice /> {translate("primi")}
+          <Radio.Button value="Primi Piatti" style={buttonStyle}>
+            {translate("primi")}
           </Radio.Button>
-          <Radio.Button
-            value="Secondi Piatti"
-            style={{
-              margin: "0 10px",
-              padding: 18,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              color: "#053EEF",
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          >
-            <FaHamburger /> {translate("secondi")}
+          <Radio.Button value="Secondi Piatti" style={buttonStyle}>
+            {translate("secondi")}
           </Radio.Button>
-          <Radio.Button
-            value="Dessert"
-            style={{
-              margin: "0 10px",
-              padding: 18,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              backgroundColor: "#fff",
-              color: "#053EEF",
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          >
-            <FaIceCream /> {translate("dessert")}
+          <Radio.Button value="Dessert" style={buttonStyle}>
+            {translate("dessert")}
           </Radio.Button>
         </Radio.Group>
+
+        {/* Sottofiltri */}
+        {selectedCategory !== "All" && (
+          <div
+            style={{
+              position: "fixed",
+              top: 106,
+              left: 0,
+              width: "100%",
+              overflowX: "auto",
+              whiteSpace: "nowrap",
+              padding: "5px",
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+              marginTop: 5,
+              paddingLeft: 10,
+              zIndex: 1000,
+            }}
+          >
+            {subFilters.map((filter) => (
+              <Button
+                key={filter}
+                onClick={() => filterMeals(selectedCategory, filter)}
+                style={{ margin: "0 5px" }}
+              >
+                {filter}
+              </Button>
+            ))}
+            <Title
+              level={4}
+              style={{ marginTop: 7, padding: 8, marginLeft: 0 }}
+            >
+              {filterTitle === undefined ? "Tutti i prodotti" : filterTitle}
+            </Title>
+          </div>
+        )}
       </div>
 
-      {loading ? (
-        <Spin size="large" style={{ margin: "20px auto", display: "block" }} />
-      ) : meals.length > 0 ? (
-        <Row gutter={[16, 16]} style={{ marginLeft: 0, marginRight: 0, paddingBottom:100 }}>
-          {filteredMeals.map((meal) => {
-            const price = 10; // Sostituisci con il prezzo desiderato o un calcolo da un API
-            return (
-              <Col xs={24} sm={24} md={12} key={meal.idMeal}>
+      <TransitionGroup
+        component={Row}
+        gutter={16}
+        style={{
+          marginLeft: 0,
+          marginRight: 0,
+          marginBottom: 55,
+          // Rimuovi il marginTop fisso e considera l'uso di padding o margin in modo dinamico
+          paddingTop: "186px", // Puoi aggiustare questo valore in base alla tua necessità
+        }}
+        justify="center"
+      >
+        {loading ? (
+          <CSSTransition key="spinner" timeout={300} classNames="fade">
+            <Spin size="large" style={{ marginTop: 200 }} />
+          </CSSTransition>
+        ) : filteredMeals.length > 0 ? (
+          filteredMeals.map((meal) => (
+            <CSSTransition key={meal.idMeal} timeout={300} classNames="fade">
+              <Col span={11} key={meal.idMeal} style={{ marginBottom: 20 }}>
                 <Card
-                  style={{
-                    borderRadius: "12px",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
-                    padding: "15px", // Ridotto per dispositivi mobili
-                    margin: "10px", // Spaziatura più contenuta
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    transition: "transform 0.2s ease, box-shadow 0.3s ease",
-                  }}
-                  bordered={false}
+                  hoverable
+                  cover={<img alt={meal.strMeal} src={meal.strMealThumb} />}
+                  actions={[
+                    <QuantitySelector
+                      mealId={meal.idMeal}
+                      meal={meal}
+                      onQuantityChange={handleQuantityChange}
+                    />,
+                  ]}
                 >
-                  <img
-                    src={meal.strMealThumb}
-                    alt={meal.strMeal}
-                    style={{
-                      height: "160px", // Altezza ridotta per un layout mobile
-                      width: "100%",
-                      objectFit: "cover",
-                      borderRadius: "5px",
-                      marginBottom: "10px",
-                    }}
+                  <Card.Meta
+                    title={meal.strMeal}
+                    description={meal.strCategory}
                   />
-
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "stretch",
-                      marginTop: "10px",
-                    }}
-                  >
-                    <div style={{ flexGrow: 1 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: "1.6rem",
-                            fontWeight: "bold",
-                            color: "#282828",
-                          }}
-                        >
-                          {meal.strMeal}
-                        </span>
-                        <QuantitySelector
-                          mealId={meal.idMeal}
-                          onChange={(quantity) =>
-                            handleQuantityChange(meal.idMeal, quantity)
-                          }
-                          style={{ width: "auto" }}
-                        />
-                      </div>
-
-                      <p
-                        style={{
-                          fontSize: "1.1rem",
-                          color: "#282828",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        <strong>Ingredienti:</strong>
-                      </p>
-                      <ul
-                        style={{
-                          paddingLeft: "0px",
-                          margin: 0,
-                          listStyleType: "none",
-                          fontSize: "0.9rem",
-                          display: "flex",
-                          flexDirection: "row",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        {[
-                          meal.strIngredient1,
-                          meal.strIngredient2,
-                          meal.strIngredient3,
-                        ]
-                          .filter(Boolean)
-                          .map((ingredient, index) => (
-                            <li
-                              key={index}
-                              style={{ marginRight: "5px", color: "#888" }}
-                            >
-                              {ingredient}
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                    <hr></hr>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        addToCart({
-                          id: meal.idMeal,
-                          title: meal.strMeal,
-                          image: meal.strMealThumb,
-                          price: price,
-                          quantity: quantities[meal.idMeal] || 1,
-                        });
-                        notifyAddToCart(meal);
-                      }}
-                      style={{
-                        width: "100%", // Larghezza al 100% per il pulsante
-                        padding: "12px", // Padding maggiore per migliorare l'usabilità
-                        fontSize: "1rem",
-                        fontWeight: "600",
-                        backgroundColor: "#fff",
-                        border: "1.5px solid #053EEF",
-                        height: 40,
-                        color: "#053EEF",
-                        transition:
-                          "background-color 0.3s ease, transform 0.2s ease",
-                      }}
-                    >
-                      {translate("addToCart")}
-                    </Button>
-                  </div>
                 </Card>
               </Col>
-            );
-          })}
-        </Row>
-      ) : (
-        <p>{translate("noMealsFound")}</p>
-      )}
+            </CSSTransition>
+          ))
+        ) : (
+          <CSSTransition timeout={300} classNames="fade">
+            <div style={{ textAlign: "center", marginTop: "220px" }}>
+              <FrownOutlined style={{ fontSize: "48px", color: "#ccc" }} />
+              <div style={{ marginTop: 20 }}>
+                <span style={{ fontSize: 22 }}>
+                  {translate("noMealsFound")}
+                </span>
+              </div>
+            </div>
+          </CSSTransition>
+        )}
+      </TransitionGroup>
     </div>
   );
+};
+
+// Stili per i pulsanti
+const buttonStyle = {
+  margin: "0 10px",
+  fontSize: 16,
+  border:"1.5px solid #d9d9d9"
 };
 
 export default Menu;

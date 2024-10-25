@@ -103,7 +103,7 @@ const Carrello = () => {
           <div
             style={{
               position: "fixed",
-              bottom: 69,
+              bottom: 50,
               left: 0,
               right: 0,
               backgroundColor: "#fff",

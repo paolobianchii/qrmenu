@@ -3,8 +3,8 @@
 .tab-bar {
   display: flex;
   justify-content: space-around;
-  background-color: #056617;
-  padding: 15px 0;
+  background: linear-gradient(90deg, #056617, #19A341); /* Gradiente verde */
+  padding: 5px 0;
   flex-direction: row;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: fixed; /* Fissa la tab bar in basso */
@@ -12,31 +12,50 @@
   height: 40px;
   width: 100%;
   z-index: 1000; /* Assicura che sia sopra altri elementi */
+  left: 0; /* Aggiunto per fissare ulteriormente la posizione */
 }
 
-/* Aggiungi un margine inferiore alla pagina */
+/* Assicurati che non ci siano margini o padding non desiderati */
 body {
   margin: 0; /* Rimuovi il margine predefinito */
+  padding: 0; /* Rimuovi il padding predefinito */
+}
+
+/* Aggiungi uno spazio per la tab bar se necessario */
+.main-content {
   padding-bottom: 48px; /* Spazio per la tab bar */
 }
 
 .tab-link {
   text-decoration: none;
   color: #fff; /* Colore di default */
-  padding: 10px 15px;
+  padding: 10px 10px;
   border-radius: 5px;
   width: 100% !important;
-  transition: color 0.3s, transform 0.3s; /* Transizioni per colore e trasformazione */
+  transition: color 0.3s, transform 0.3s, box-shadow 0.3s;
   display: flex;
-  font-size: 13px !important;
+  font-size: 14px !important;
   align-items: center;
-  flex-direction: row;
-  justify-content: center; /* Allinea verticalmente il contenuto */
-  position: relative; /* Necessario per la pseudo-classe :after */
+  justify-content: center;
+  position: relative;
 }
 
 .tab-link.active {
   color: #fff; /* Colore del testo quando attivo */
-  transform: scale(1.1); /* Ingrandisce il tab attivo */
+  transform: scale(1.1); /* Effetto zoom */
   font-weight: 600;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Aggiunge un'ombra verde luminosa */
 }
+
+/* Bordo animato solo parziale */
+.tab-link.active::after {
+  content: '';
+  position: absolute;
+  left: 25%; /* Sposta il bordo verso il centro */
+  right: 25%; /* Limita la larghezza per lasciare spazio ai lati */
+  bottom: -4px; /* Posiziona il bordo sotto il link */
+  height: 3px; /* Altezza del bordo */
+  border-radius: 3px;
+  transition: width 0.3s ease-in-out;
+}
+
