@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCart } from "../components/CartContext"; // Assicurati che il percorso sia corretto
-import { List, Typography, Button, Modal, Form, Input } from "antd";
+import { List, Typography, Button, Modal, Form, Input, Select } from "antd";
 import { Trash2 } from "react-feather";
 import {
   ShoppingCartOutlined,
@@ -8,16 +8,24 @@ import {
   UserOutlined,
   TableOutlined,
 } from "@ant-design/icons";
+import { Option } from "antd/es/mentions";
 
 const { Title } = Typography;
 
 const Carrello = () => {
   const { cartItems, totalQuantity, totalPrice, removeFromCart } =
     useCart();
+    const [language, setLanguage] = useState("it");
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
+  };
+
+  const handleLanguageChange = (value) => {
+    setLanguage(value);
+    localStorage.setItem("language", value);
   };
 
   const handleOk = () => {
@@ -41,6 +49,19 @@ const Carrello = () => {
         }}
       >
         <Title level={2}>Carrello</Title>
+        <Select
+          value={language}
+          onChange={handleLanguageChange}
+          style={{
+            width: 120,
+            marginLeft: "auto",
+            marginTop: 7,
+            marginRight: 10,
+          }}
+        >
+          <Option value="it">Italiano</Option>
+          <Option value="en">English</Option>
+        </Select>
       </div>
       {totalQuantity === 0 ? (
         <div
@@ -65,6 +86,7 @@ const Carrello = () => {
             dataSource={cartItems}
             renderItem={(item) => (
               <List.Item
+              style={{backgroundColor:"#f3f3f3", padding:10, borderRadius:10,marginTop:10, border:"1.5px solid #d5d5d5"}}
                 actions={[
                   <Button onClick={() => removeFromCart(item.id)}>
                     <Trash2 style={{ width: 14 }} /> Rimuovi
@@ -76,19 +98,19 @@ const Carrello = () => {
                     <img
                       src={item.image}
                       alt={item.title}
-                      style={{ width: 60, height: 60, objectFit: "cover" }}
+                      style={{ width: 100, height: 100, objectFit: "cover" }}
                     />
                   }
                   title={
-                    <span style={{ fontWeight: "bold" }}>{item.title}</span>
+                    <span style={{ fontWeight: "bold", fontSize:20 }}>{item.title}</span>
                   }
                   description={
-                    <span>
+                    <span style={{fontSize:16}}>
                       Prezzo:{" "}
                       <span style={{ fontWeight: "bold", color: "#a9a9a9" }}>
                         {item.price} €
                       </span>{" "}
-                      | Quantità:{" "}
+                       Quantità:{" "}
                       <span style={{ fontWeight: "bold", color: "#a9a9a9" }}>
                         {item.quantity}
                       </span>
@@ -112,11 +134,10 @@ const Carrello = () => {
               justifyContent: "space-around",
               flexDirection: "row",
               alignItems: "center",
-              height: 80,
+              height: 68,
             }}
           >
             <h3>Totale: {totalPrice} €</h3>
-
             <Button
               type="primary"
               onClick={showModal}

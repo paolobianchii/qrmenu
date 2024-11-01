@@ -17,7 +17,6 @@ const TabBar = () => {
       <NavLink
         exact="true"
         to="/qrmenu"
-        activeClassName="active"
         className="tab-link"
         onClick={scrollToTop} 
       >
@@ -26,7 +25,6 @@ const TabBar = () => {
       </NavLink>
       <NavLink
         to="/carrello"
-        activeClassName="active"
         className="tab-link"
       >
         <ShoppingCartOutlined className="icon" style={{ fontSize: 18 }} />
@@ -34,12 +32,13 @@ const TabBar = () => {
         <Badge
           count={getTotalQuantity()}
           offset={[0, -0]}
+          showZero={true}
           className="badgeCart"
         />
         <Badge
           count={`${totalPrice} €`}
           offset={[10, 0]}
-          style={{ color: "#fff", fontSize: 12, fontWeight: "600", backgroundColor: "transparent" }}
+          style={{ color: "#000000", marginLeft:-5,fontSize: 14, fontWeight: "600", backgroundColor: "transparent" }}
         />
       </NavLink>
     </nav>

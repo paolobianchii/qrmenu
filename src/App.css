@@ -12,19 +12,14 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed; /* Blocca l'immagine durante lo scroll */
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.2
-  ); /* Colore bianco con 50% di trasparenza */
+  background-color: red !; /* Colore bianco con 50% di trasparenza */
 }
 
 /* src/components/Menu.css */
 .sticky-header {
   position: sticky;
   top: 0;
-  background-color: white;
+  background-color: #F4F4F4 !important;
   z-index: 1000;
   padding: 10px;
   height: 50px !important;
@@ -33,6 +28,12 @@ body {
 
 .filter-container {
   margin-bottom: 20px;
+}
+
+.card {
+  min-height: 150px !important; /* Imposta l'altezza minima in base alle tue esigenze */
+  display: flex;
+  flex-direction: column;
 }
 
 /* src/components/Carrello.css */

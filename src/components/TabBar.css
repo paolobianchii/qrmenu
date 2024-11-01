@@ -3,11 +3,12 @@
 .tab-bar {
   display: flex;
   justify-content: space-around;
-  background: linear-gradient(90deg, #056617, #19A341); /* Gradiente verde */
+  background-color: #ffff !important; /* Gradiente verde */
   padding: 5px 0;
   flex-direction: row;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: fixed; /* Fissa la tab bar in basso */
+  color: #282828 !important; /* Colore di default */
   bottom: 0;
   height: 40px;
   width: 100%;
@@ -24,11 +25,13 @@ body {
 /* Aggiungi uno spazio per la tab bar se necessario */
 .main-content {
   padding-bottom: 48px; /* Spazio per la tab bar */
+  background-color: red !important;
 }
 
 .tab-link {
   text-decoration: none;
-  color: #fff; /* Colore di default */
+  color: #282828 !important; /* Colore di default */
+  border: none !important;
   padding: 10px 10px;
   border-radius: 5px;
   width: 100% !important;
@@ -40,10 +43,16 @@ body {
   position: relative;
 }
 
+.ant-card-actions{
+  background: none !important;
+  background-color: #000000 !important;
+}
+
 .tab-link.active {
   color: #fff; /* Colore del testo quando attivo */
-  transform: scale(1.1); /* Effetto zoom */
+  transform: scale(1.2); /* Effetto zoom */
   font-weight: 600;
+  border-bottom: none !important;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Aggiunge un'ombra verde luminosa */
 }
 
@@ -56,6 +65,7 @@ body {
   bottom: -4px; /* Posiziona il bordo sotto il link */
   height: 3px; /* Altezza del bordo */
   border-radius: 3px;
+  border-top: 2px solid #5FE53E !important;
   transition: width 0.3s ease-in-out;
 }
 
