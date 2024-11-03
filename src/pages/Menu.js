@@ -8,7 +8,6 @@ import {
   Spin,
   Radio,
   Select,
-  notification,
 } from "antd";
 import { useCart } from "../components/CartContext";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -19,20 +18,27 @@ const { Title } = Typography;
 const { Option } = Select;
 
 // Componente per la selezione della quantità
-const QuantitySelector = ({ mealId, meal, onQuantityChange }) => {
-  const { cartItems } = useCart();
+const QuantitySelector = ({ mealId, meal }) => {
+  const { cartItems, addToCart, updateQuantity } = useCart();
   const existingItem = cartItems.find((item) => item.id === mealId);
-  const initialQuantity = existingItem ? existingItem.quantity : 0;
-  const [quantity, setQuantity] = useState(initialQuantity);
+  const quantity = existingItem ? existingItem.quantity : 0;
 
-  useEffect(() => {
-    setQuantity(existingItem ? existingItem.quantity : 0);
-  }, [existingItem]);
+  const handleQuantityChange = (change) => {
+    if (quantity + change < 0) return; // Prevent negative quantities
 
-  const handleChange = (newQuantity) => {
-    if (newQuantity < 0) return; // Previene la quantità negativa
-    setQuantity(newQuantity);
-    onQuantityChange(mealId, meal, newQuantity - initialQuantity); // Passa la differenza
+    if (quantity === 0 && change > 0) {
+      // Add new item to cart
+      addToCart({
+        id: mealId,
+        title: meal.strMeal,
+        image: meal.strMealThumb,
+        price: meal.price, // Using the fixed price from your UI
+        quantity: 1
+      });
+    } else if (quantity > 0) {
+      // Update existing item quantity
+      updateQuantity(mealId, change);
+    }
   };
 
   return (
@@ -45,7 +51,7 @@ const QuantitySelector = ({ mealId, meal, onQuantityChange }) => {
       }}
     >
       <Button
-        onClick={() => handleChange(quantity - 1)}
+        onClick={() => handleQuantityChange(-1)}
         style={{
           fontSize: 25,
           width: "30%",
@@ -67,7 +73,7 @@ const QuantitySelector = ({ mealId, meal, onQuantityChange }) => {
         {quantity}
       </span>
       <Button
-        onClick={() => handleChange(quantity + 1)}
+        onClick={() => handleQuantityChange(1)}
         style={{
           fontSize: 25,
           width: "30%",
@@ -89,26 +95,32 @@ const Menu = () => {
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [language, setLanguage] = useState("it");
-  const { addToCart } = useCart();
   const [/*subFilters*/, setSubFilters] = useState([]);
-
-  const [quantities, setQuantities] = useState({});
   const [/*filterTitle*/, setFilterTitle] = useState("Tutti i Prodotti"); // Aggiungi il titolo del filtro
 
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") || "it";
     setLanguage(storedLanguage);
-
+  
     const fetchMeals = async () => {
       setLoading(true);
       try {
-        const response = await fetch(
-          "https://www.themealdb.com/api/json/v1/1/search.php?s="
-        );
+        const response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s=");
         const data = await response.json();
+        
+        // Controlla se ci sono pasti e aggiungi il prezzo
         if (data.meals) {
-          setMeals(data.meals);
-          setFilteredMeals(data.meals); // Imposta subito tutti i pasti su filteredMeals
+          const mealsWithPrice = data.meals.map(meal => ({
+            ...meal,
+            price: (Math.random() * (20 - 5) + 5).toFixed(2) // Prezzo casuale tra 5 e 20 euro
+          }));
+  
+          setMeals(mealsWithPrice);
+          setFilteredMeals(mealsWithPrice); // Imposta subito tutti i pasti su filteredMeals
+        } else {
+          console.error("Nessun pasto trovato nell'API.");
+          setMeals([]); // Imposta meals come un array vuoto se non ci sono pasti
+          setFilteredMeals([]); // Imposta filteredMeals come un array vuoto
         }
       } catch (error) {
         console.error("Error fetching meals:", error);
@@ -116,9 +128,10 @@ const Menu = () => {
         setLoading(false);
       }
     };
-
+  
     fetchMeals();
   }, []);
+  
 
   const handleFilterChange = (value) => {
     setSelectedCategory(value);
@@ -179,25 +192,6 @@ const Menu = () => {
     }, 400); // Aggiungi un ritardo per rendere più fluida la transizione
   };
 
-  const handleQuantityChange = (mealId, meal, quantityChange) => {
-    const newQuantity = (quantities[mealId] || 0) + quantityChange;
-
-    if (newQuantity > 0) {
-      addToCart({
-        id: mealId,
-        title: meal.strMeal,
-        image: meal.strMealThumb,
-        price: 10, // Sostituisci con il prezzo reale
-        quantity: newQuantity,
-      });
-      setQuantities({ ...quantities, [mealId]: newQuantity });
-      notifyAddToCart(meal);
-    } else {
-      // Rimuovi il pasto dal carrello se la quantità è zero o inferiore
-      const { [mealId]: _, ...rest } = quantities;
-      setQuantities(rest);
-    }
-  };
 
   const getIngredients = (meal) => {
     return Array.from(
@@ -237,17 +231,6 @@ const Menu = () => {
     localStorage.setItem("language", value);
   };
 
-  const notifyAddToCart = (meal) => {
-    notification.success({
-      message: translate("addToCart"),
-      description: `${meal.strMeal}`,
-      placement: "bottomRight",
-      style: {
-        fontSize: "12px", // Riduci la dimensione del testo
-        padding: "10px",   // Riduci il padding
-      },
-    });
-  };
 
   return (
     <div>
@@ -361,6 +344,7 @@ const Menu = () => {
                         style={{ width: "100%", height: "auto" }}
                       />
                       <span
+                      key="price"
                         style={{
                           position: "absolute",
                           bottom: "18px",
@@ -373,15 +357,15 @@ const Menu = () => {
                           fontWeight:"600"
                         }}
                       >
-                        € 12,50
+                        {meal.price}
                       </span>
                     </div>
                   }
                   actions={[
                     <QuantitySelector
+                      key="quantity"
                       mealId={meal.idMeal}
                       meal={meal}
-                      onQuantityChange={handleQuantityChange}
                     />,
                   ]}
                 >

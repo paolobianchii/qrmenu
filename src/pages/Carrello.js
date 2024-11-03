@@ -42,10 +42,16 @@ const Carrello = () => {
       <div
         className="sticky-header"
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           flexDirection: "row",
+          padding: "10px 10px",
+          zIndex: 1000,
         }}
       >
         <Title level={2}>Carrello</Title>
@@ -56,7 +62,7 @@ const Carrello = () => {
             width: 120,
             marginLeft: "auto",
             marginTop: 7,
-            marginRight: 10,
+            marginRight: 20,
           }}
         >
           <Option value="it">Italiano</Option>
@@ -80,7 +86,7 @@ const Carrello = () => {
           </p>
         </div>
       ) : (
-        <div style={{ padding: 10, marginBottom: 160 }}>
+        <div style={{ padding: 10, marginBottom: 290, marginTop:70 }}>
           <List
             itemLayout="horizontal"
             dataSource={cartItems}

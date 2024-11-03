@@ -3,17 +3,17 @@
 .tab-bar {
   display: flex;
   justify-content: space-around;
-  background-color: #ffff !important; /* Gradiente verde */
+  background-color: #ffff !important;
   padding: 5px 0;
   flex-direction: row;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Fissa la tab bar in basso */
-  color: #282828 !important; /* Colore di default */
+  position: fixed;
+  color: #282828 !important;
   bottom: 0;
   height: 40px;
   width: 100%;
-  z-index: 1000; /* Assicura che sia sopra altri elementi */
-  left: 0; /* Aggiunto per fissare ulteriormente la posizione */
+  z-index: 1000;
+  left: 0;
 }
 
 /* Assicurati che non ci siano margini o padding non desiderati */
@@ -30,12 +30,12 @@ body {
 
 .tab-link {
   text-decoration: none;
-  color: #282828 !important; /* Colore di default */
+  color: #282828 !important;
   border: none !important;
   padding: 10px 10px;
   border-radius: 5px;
   width: 100% !important;
-  transition: color 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   font-size: 14px !important;
   align-items: center;
@@ -48,24 +48,53 @@ body {
   background-color: #000000 !important;
 }
 
+/* Modifica del colore e dello stile per la tab attiva */
 .tab-link.active {
-  color: #fff; /* Colore del testo quando attivo */
-  transform: scale(1.2); /* Effetto zoom */
-  font-weight: 600;
+  color: #282828 !important; /* Mantengo il colore del testo nero */
+  transform: none; /* Rimuovo l'effetto zoom */
   border-bottom: none !important;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Aggiunge un'ombra verde luminosa */
+  box-shadow: none; /* Rimuovo l'ombra */
 }
 
-/* Bordo animato solo parziale */
-.tab-link.active::after {
+/* Bordo superiore per la tab attiva */
+.tab-link.active::before {
   content: '';
   position: absolute;
-  left: 25%; /* Sposta il bordo verso il centro */
-  right: 25%; /* Limita la larghezza per lasciare spazio ai lati */
-  bottom: -4px; /* Posiziona il bordo sotto il link */
-  height: 3px; /* Altezza del bordo */
+  left: 0;
+  right: 0;
+  top: -5px; /* Posiziona il bordo sopra */
+  height: 3px;
+  background-color: #5FE53E; /* Colore verde per il bordo */
   border-radius: 3px;
-  border-top: 2px solid #5FE53E !important;
-  transition: width 0.3s ease-in-out;
+}
+
+/* Rimuovo il bordo inferiore precedente */
+.tab-link.active::after {
+  content: none;
+
+}
+
+/* Stile specifico per il link Menu quando è attivo */
+NavLink[to="/qrmenu"].active {
+  color: #282828 !important;
+  font-weight: 600 !important;
+
+}
+
+.menu-tab {
+  position: relative;
+}
+
+.menu-tab::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -5px;
+  height: 3px;
+  background-color: #5FE53E !important;
+  border-radius: 3px;
+
+  transition: all 0.3s ease;
 }
 
