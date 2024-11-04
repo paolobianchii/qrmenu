@@ -313,7 +313,7 @@ const Menu = () => {
           marginBottom: 55,
           backgroundColor: "#FCFCFC",
           // Rimuovi il marginTop fisso e considera l'uso di padding o margin in modo dinamico
-          paddingTop: "186px", // Puoi aggiustare questo valore in base alla tua necessità
+          paddingTop: "158px", // Puoi aggiustare questo valore in base alla tua necessità
         }}
         justify="center"
       >
@@ -354,10 +354,10 @@ const Menu = () => {
                           padding: "4px 8px",
                           borderRadius: "4px",
                           fontSize:17,
-                          fontWeight:"600"
+                          fontWeight:"700"
                         }}
                       >
-                        {meal.price}
+                        € {meal.price}
                       </span>
                     </div>
                   }

@@ -76,7 +76,7 @@ const Carrello = () => {
             justifyContent: "center",
             alignItems: "center",
             flexDirection: "column",
-            height: "60vh", // Imposta un'altezza per centrare verticalmente
+            height: "100vh", // Imposta un'altezza per centrare verticalmente
             textAlign: "center",
           }}
         >
@@ -145,18 +145,25 @@ const Carrello = () => {
           >
             <h3>Totale: {totalPrice} €</h3>
             <Button
-              type="primary"
-              onClick={showModal}
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                border: "1.4px solid #053EEF",
-                color: "#053EEF",
-                backgroundColor: "#fff",
-              }}
-            >
-              Procedi al pagamento
-            </Button>
+  type="primary"
+  onClick={showModal}
+  style={{
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+    background: "linear-gradient(45deg, #007BFF, #00D4FF)", // Gradiente di colore
+    border: "none",
+    padding: "12px 24px",
+    borderRadius: "12px",
+    boxShadow: "0px 6px 12px rgba(0, 123, 255, 0.4)", // Leggera ombra
+    transition: "transform 0.1s ease-in-out",
+    outline: "none",
+  }}
+  className="payment-button"
+>
+  Procedi al pagamento
+</Button>
+
           </div>
         </div>
       )}

@@ -32,13 +32,15 @@ export const CartProvider = ({ children }) => {
   }
   };
 
-  const updateQuantity = (id, quantityChange) => {
+  const updateQuantity = (mealId, change) => {
     setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + quantityChange } // Aggiorna la quantità
-          : item
-      )
+      prevItems
+        .map((item) =>
+          item.id === mealId
+            ? { ...item, quantity: item.quantity + change }
+            : item
+        )
+        .filter((item) => item.quantity > 0) // Rimuovi l'elemento se la quantità è zero
     );
   };
 

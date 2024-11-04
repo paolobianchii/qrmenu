@@ -6,7 +6,6 @@ body {
 
 .content {
   text-align: left;
-  min-height: 100vh; /* Copre almeno l'altezza della viewport */
   background-image: url("../src//assets/img/background.jpg"); /* Inserisci qui il percorso della tua immagine di sfondo */
   background-size: cover; /* Contiene l'immagine nella pagina */
   background-repeat: no-repeat;
